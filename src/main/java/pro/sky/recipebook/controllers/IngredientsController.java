@@ -12,11 +12,15 @@ import pro.sky.recipebook.services.impl.IngredientsServiceImpl;
 public class IngredientsController {
     private IngredientsServiceImpl ingredientsService;
 
+    public IngredientsController(IngredientsServiceImpl ingredientsService) {
+        this.ingredientsService = ingredientsService;
+    }
+
     @GetMapping("/add")
     public void addIngredient(@RequestParam int id, @RequestParam String name, @RequestParam int count, @RequestParam String format){
-        ingredientsService.add(id,name,count,format);
+        ingredientsService.add(id, name, count, format);
     }
-    @GetMapping("/getingredient")
+    @GetMapping("/get")
     public Ingredient getIngredient(@RequestParam int id, @RequestParam String name){
         return ingredientsService.get(id,name);
     }

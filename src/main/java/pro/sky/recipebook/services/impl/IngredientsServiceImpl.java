@@ -1,9 +1,11 @@
 package pro.sky.recipebook.services.impl;
 
+import org.springframework.stereotype.Service;
 import pro.sky.recipebook.models.entities.recipe.ingredient.Ingredient;
 import pro.sky.recipebook.services.IngredientsService;
 import pro.sky.recipebook.services.RecipeBookService;
 
+@Service
 public class IngredientsServiceImpl implements IngredientsService {
     private RecipeBookService recipeBookService;
 

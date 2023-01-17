@@ -15,18 +15,17 @@ import java.util.ArrayList;
 public class RecipeBookController {
     private RecipeBookServiceImpl recipeBookService;
 
-    public RecipeBookController(RecipeBookServiceImpl recipeBookService){
+    public RecipeBookController(RecipeBookServiceImpl recipeBookService) {
         this.recipeBookService = recipeBookService;
     }
 
     @GetMapping("/add")
-    public void addRecipe(@RequestParam int id, @RequestParam String title, @RequestParam int time, @RequestParam ArrayList<Ingredient> ingredients, @RequestParam String...steps){
-
-        recipeBookService.add(id,title,time,ingredients,steps);
-
+    public void addRecipe(@RequestParam int id, @RequestParam String title, @RequestParam int time, @RequestParam ArrayList<Ingredient> ingredients, @RequestParam String... steps) {
+        recipeBookService.add(id, title, time, ingredients, steps);
     }
+
     @GetMapping("/get")
-    public Recipe getRecipeById(@RequestParam int id){
+    public Recipe getRecipeById(@RequestParam int id) {
         return recipeBookService.find(id);
     }
 }
