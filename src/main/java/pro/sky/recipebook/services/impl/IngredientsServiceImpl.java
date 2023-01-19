@@ -1,21 +1,48 @@
 package pro.sky.recipebook.services.impl;
 
 import org.springframework.stereotype.Service;
-import pro.sky.recipebook.models.entities.recipe.ingredient.Ingredient;
+import pro.sky.recipebook.model.Ingredient;
 import pro.sky.recipebook.services.IngredientsService;
-import pro.sky.recipebook.services.RecipeBookService;
+
+import java.util.HashMap;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
-    private RecipeBookService recipeBookService;
+
+    private IngredientsService ingredientsService;
+    private static HashMap<Integer, Ingredient> ingredientHashMap;
 
     @Override
     public void add(int id, String name, int count, String format) {
-        recipeBookService.find(id).getIngredients().add(new Ingredient(name,count,format));
+        ingredientHashMap.getOrDefault(id, new Ingredient(id, name, count, format));
     }
 
     @Override
-    public Ingredient get(int id, String name) {
-        return recipeBookService.find(id).getIngredients().stream().filter(ingredient -> ingredient.getName().equals(name)).findAny().orElse(null);
+    public Ingredient get(int id) {
+        for (Ingredient ing : ingredientHashMap.values()) {
+            if (ing != null && ing.getId() == id) {
+                return ing;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void edit(int id, String name, int count, String format) {
+        ingredientHashMap.replace(id, new Ingredient(id, name, count, format));
+    }
+
+    @Override
+    public boolean delete(int id) {
+        if (ingredientHashMap.get(id) != null) {
+            ingredientHashMap.remove(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String getAll() {
+        return ingredientHashMap.values().iterator().toString();
     }
 }
