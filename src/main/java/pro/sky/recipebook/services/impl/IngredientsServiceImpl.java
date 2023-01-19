@@ -11,10 +11,11 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     private IngredientsService ingredientsService;
     private static HashMap<Integer, Ingredient> ingredientHashMap;
+    private static int id;
 
     @Override
-    public void add(int id, String name, int count, String format) {
-        ingredientHashMap.getOrDefault(id, new Ingredient(id, name, count, format));
+    public void add(Ingredient ingredient) {
+        ingredientHashMap.getOrDefault(id++, ingredient);
     }
 
     @Override
@@ -28,8 +29,8 @@ public class IngredientsServiceImpl implements IngredientsService {
     }
 
     @Override
-    public void edit(int id, String name, int count, String format) {
-        ingredientHashMap.replace(id, new Ingredient(id, name, count, format));
+    public void edit(int id, Ingredient ingredient) {
+        ingredientHashMap.replace(id, ingredient);
     }
 
     @Override

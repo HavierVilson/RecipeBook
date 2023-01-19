@@ -15,12 +15,12 @@ public class IngredientsController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Ingredient> addIngredient(@RequestParam int id, @RequestParam String name, @RequestParam int count, @RequestParam String format) {
-        ingredientsService.add(id, name, count, format);
-        return ResponseEntity.ok().body(ingredientsService.get(id));
+    public ResponseEntity<Ingredient> addIngredient(@RequestBody Ingredient ingredient) {
+        ingredientsService.add(ingredient);
+        return ResponseEntity.ok().body(ingredient);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Ingredient> getIngredient(@PathVariable int id) {
         if (ingredientsService.get(id) == null) {
             return ResponseEntity.notFound().build();
@@ -28,16 +28,16 @@ public class IngredientsController {
         return ResponseEntity.ok(ingredientsService.get(id));
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Ingredient> putIngredient(@PathVariable int id, @RequestParam String name, @RequestParam int count, @RequestParam String format) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Ingredient> putIngredient(@PathVariable int id, @RequestBody Ingredient ingredient) {
         if (ingredientsService.get(id) == null) {
             return ResponseEntity.notFound().build();
         }
-        ingredientsService.edit(id, name, count, format);
-        return ResponseEntity.ok(ingredientsService.get(id));
+        ingredientsService.edit(id, ingredient);
+        return ResponseEntity.ok(ingredient);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
         if (ingredientsService.delete(id)) {
             return ResponseEntity.notFound().build();
@@ -45,7 +45,7 @@ public class IngredientsController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/get/all")
+    @GetMapping("/all")
     public ResponseEntity<String> getIngredient() {
         return ResponseEntity.ok(ingredientsService.getAll());
     }

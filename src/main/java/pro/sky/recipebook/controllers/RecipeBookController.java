@@ -18,12 +18,12 @@ public class RecipeBookController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Recipe> addIngredient(@RequestParam int id, @RequestParam String name, @RequestParam int time, @RequestParam ArrayList<Ingredient> ingredients, @RequestParam ArrayList<String> steps) {
-        recipeBookService.add(id, name, time, ingredients, steps);
-        return ResponseEntity.ok().body(recipeBookService.get(id));
+    public ResponseEntity<Recipe> addIngredient(@RequestBody Recipe recipe) {
+        recipeBookService.add(recipe);
+        return ResponseEntity.ok().body(recipe);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Recipe> getIngredient(@PathVariable int id) {
         if (recipeBookService.get(id) == null) {
             return ResponseEntity.notFound().build();
@@ -31,16 +31,16 @@ public class RecipeBookController {
         return ResponseEntity.ok(recipeBookService.get(id));
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Recipe> putIngredient(@PathVariable int id, @RequestParam String name, @RequestParam int time, @RequestParam ArrayList<Ingredient> ingredients, @RequestParam ArrayList<String> steps) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Recipe> putIngredient(@PathVariable int id, @RequestBody Recipe recipe) {
         if (recipeBookService.get(id) == null) {
             return ResponseEntity.notFound().build();
         }
-        recipeBookService.edit(id, name, time, ingredients, steps);
+        recipeBookService.edit(id, recipe);
         return ResponseEntity.ok(recipeBookService.get(id));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
         if (recipeBookService.delete(id)) {
             return ResponseEntity.notFound().build();
@@ -48,7 +48,7 @@ public class RecipeBookController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/get/all")
+    @GetMapping("/all")
     public ResponseEntity<String> getIngredient() {
         return ResponseEntity.ok(recipeBookService.getAll());
     }

@@ -1,20 +1,19 @@
 package pro.sky.recipebook.services.impl;
 
 import org.springframework.stereotype.Service;
-import pro.sky.recipebook.model.Ingredient;
 import pro.sky.recipebook.model.Recipe;
 import pro.sky.recipebook.services.RecipeBookService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
 public class RecipeBookServiceImpl implements RecipeBookService {
     private static HashMap<Integer, Recipe> recipeHashMap;
+    private static int id;
 
     @Override
-    public void add(int id, String name, int time, ArrayList<Ingredient> ingredients, ArrayList<String> steps) {
-        recipeHashMap.put(id, new Recipe(id, name, time, ingredients, steps));
+    public void add(Recipe recipe) {
+        recipeHashMap.put(id++, recipe);
     }
 
     @Override
@@ -28,8 +27,8 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     }
 
     @Override
-    public void edit(int id, String name, int time, ArrayList<Ingredient> ingredients, ArrayList<String> steps) {
-        recipeHashMap.replace(id, new Recipe(id, name, time, ingredients, steps));
+    public void edit(int id, Recipe recipe) {
+        recipeHashMap.replace(id, recipe);
     }
 
     @Override
