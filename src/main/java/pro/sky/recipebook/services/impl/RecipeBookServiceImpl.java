@@ -9,11 +9,11 @@ import java.util.HashMap;
 @Service
 public class RecipeBookServiceImpl implements RecipeBookService {
     private static HashMap<Integer, Recipe> recipeHashMap;
-    private static int id;
+    private static int id = 1;
 
     @Override
     public void add(Recipe recipe) {
-        recipeHashMap.put(id++, recipe);
+        recipeHashMap.put(RecipeBookServiceImpl.id++, recipe);
     }
 
     @Override
