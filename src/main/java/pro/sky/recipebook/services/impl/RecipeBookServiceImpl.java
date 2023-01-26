@@ -31,6 +31,7 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     @Override
     public void add(Recipe recipe) {
         recipeHashMap.put(RecipeBookServiceImpl.id++, recipe);
+        saveToFile(); //Добавил метод
     }
 
     @Override
@@ -44,6 +45,7 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     @Override
     public void edit(int id, Recipe recipe) {
         recipeHashMap.replace(id, recipe);
+        saveToFile(); //Добавил метод
     }
 
     @Override

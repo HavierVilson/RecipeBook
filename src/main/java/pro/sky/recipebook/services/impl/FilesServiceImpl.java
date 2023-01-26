@@ -6,18 +6,19 @@ import pro.sky.recipebook.services.FilesService;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 @Service
 public class FilesServiceImpl implements FilesService {
     @Value("${path.to.data.file}")
-    private static String dataFilePath;
+    private String dataFilePath; // static было рудементом старого кода, забыл удалить
 
     @Value("${name.of.ingredients.file}")
-    private static String ingredientsFileName;
+    private String ingredientsFileName;
 
     @Value("${name.of.recipes.file}")
-    private static String recipesFileName;
+    private String recipesFileName;
 
     @Override
     public boolean saveToIngredientsFile(String json) {
@@ -26,6 +27,7 @@ public class FilesServiceImpl implements FilesService {
             Files.writeString(path, json);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -37,6 +39,7 @@ public class FilesServiceImpl implements FilesService {
             Files.writeString(path, json);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -46,7 +49,10 @@ public class FilesServiceImpl implements FilesService {
         Path path = Path.of(dataFilePath, ingredientsFileName);
         try {
             return Files.readString(path);
+        } catch (NoSuchFileException e) {
+            return null;
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -56,7 +62,10 @@ public class FilesServiceImpl implements FilesService {
         Path path = Path.of(dataFilePath, recipesFileName);
         try {
             return Files.readString(path);
+        }catch (NoSuchFileException e) {
+            return null;
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -69,6 +78,7 @@ public class FilesServiceImpl implements FilesService {
             Files.createFile(path);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -81,6 +91,7 @@ public class FilesServiceImpl implements FilesService {
             Files.createFile(path);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
