@@ -49,7 +49,7 @@ public class FilesServiceImpl implements FilesService {
         Path path = Path.of(dataFilePath, ingredientsFileName);
         try {
             return Files.readString(path);
-        } catch (NoSuchFileException e) {
+        } catch (NoSuchFileException e) { //Если я првильно понял то надо было эту ошибку добавить
             return null;
         } catch (IOException e) {
             e.printStackTrace();
