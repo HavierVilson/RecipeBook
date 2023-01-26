@@ -1,29 +1,44 @@
 package pro.sky.recipebook.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import pro.sky.recipebook.model.Ingredient;
+import pro.sky.recipebook.services.FilesService;
 import pro.sky.recipebook.services.IngredientsService;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 
 @Service
 public class IngredientsServiceImpl implements IngredientsService {
 
+    final private FilesService filesService;
+
     private IngredientsService ingredientsService;
     private static HashMap<Integer, Ingredient> ingredientHashMap;
     private static int id = 1;
 
+    public IngredientsServiceImpl(FilesService filesService) {
+        this.filesService = filesService;
+    }
+
+    @PostConstruct
+    private void init() {
+        readFromFile();
+    }
+
     @Override
     public void add(Ingredient ingredient) {
         ingredientHashMap.getOrDefault(IngredientsServiceImpl.id++, ingredient);
+        saveToFile();
     }
 
     @Override
     public Ingredient get(int id) {
-        for (Ingredient ing : ingredientHashMap.values()) {
-            if (ing != null && ing.getId() == id) {
-                return ing;
-            }
+        if (ingredientHashMap.get(id) != null){
+            return ingredientHashMap.get(id);
         }
         return null;
     }
@@ -31,6 +46,7 @@ public class IngredientsServiceImpl implements IngredientsService {
     @Override
     public void edit(int id, Ingredient ingredient) {
         ingredientHashMap.replace(id, ingredient);
+        saveToFile();
     }
 
     @Override
@@ -45,5 +61,23 @@ public class IngredientsServiceImpl implements IngredientsService {
     @Override
     public String getAll() {
         return ingredientHashMap.values().iterator().toString();
+    }
+
+    private void saveToFile(){
+        try {
+            String json = new ObjectMapper().writeValueAsString(ingredientHashMap);
+            filesService.saveToIngredientsFile(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void readFromFile(){
+        String json = filesService.readFromIngredientsFile();
+        try {
+            ingredientHashMap = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Ingredient>>(){});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
