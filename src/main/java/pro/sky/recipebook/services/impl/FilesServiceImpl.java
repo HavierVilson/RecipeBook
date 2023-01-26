@@ -12,7 +12,7 @@ import java.nio.file.Path;
 @Service
 public class FilesServiceImpl implements FilesService {
     @Value("${path.to.data.file}")
-    private String dataFilePath; // static было рудементом старого кода, забыл удалить
+    private String dataFilePath;
 
     @Value("${name.of.ingredients.file}")
     private String ingredientsFileName;
@@ -49,7 +49,7 @@ public class FilesServiceImpl implements FilesService {
         Path path = Path.of(dataFilePath, ingredientsFileName);
         try {
             return Files.readString(path);
-        } catch (NoSuchFileException e) { //Если я првильно понял то надо было эту ошибку добавить
+        } catch (NoSuchFileException e) {
             return null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,7 +62,7 @@ public class FilesServiceImpl implements FilesService {
         Path path = Path.of(dataFilePath, recipesFileName);
         try {
             return Files.readString(path);
-        } catch (NoSuchFileException e) { //Если я првильно понял то надо было эту ошибку добавить
+        } catch (NoSuchFileException e) {
             return null;
         } catch (IOException e) {
             e.printStackTrace();

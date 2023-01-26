@@ -31,7 +31,7 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     @Override
     public void add(Recipe recipe) {
         recipeHashMap.put(RecipeBookServiceImpl.id++, recipe);
-        saveToFile(); //Добавил метод
+        saveToFile();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     @Override
     public void edit(int id, Recipe recipe) {
         recipeHashMap.replace(id, recipe);
-        saveToFile(); //Добавил метод
+        saveToFile();
     }
 
     @Override
@@ -72,9 +72,11 @@ public class RecipeBookServiceImpl implements RecipeBookService {
     }
 
     private void readFromFile(){
-        String json = filesService.readFromRecipesFile();
         try {
-            recipeHashMap = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Recipe>>(){});
+            String json = filesService.readFromRecipesFile();
+            if (json != null) {
+                recipeHashMap = new ObjectMapper().readValue(json, new TypeReference<HashMap<Integer, Recipe>>(){});
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
