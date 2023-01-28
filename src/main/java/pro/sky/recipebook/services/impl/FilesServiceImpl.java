@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.sky.recipebook.services.FilesService;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -94,5 +95,15 @@ public class FilesServiceImpl implements FilesService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public File getIngredientsFile() {
+        return new File(dataFilePath + "/" + ingredientsFileName);
+    }
+
+    @Override
+    public File getRecipesFile() {
+        return new File(dataFilePath + "/" + recipesFileName);
     }
 }
