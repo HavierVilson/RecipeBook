@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.recipebook.services.FilesService;
+import pro.sky.recipebook.services.impl.RecipeBookServiceImpl;
 
 import java.io.*;
 
@@ -24,7 +25,7 @@ public class FilesControllers {
         this.filesService = filesService;
     }
 
-    @GetMapping(value ="/export/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/export/ingredients", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Скачивание файла", description = "Скачивание файла ингридиентов")
     public ResponseEntity<InputStreamResource> downloadIngredientsFile() throws FileNotFoundException {
         File file = filesService.getIngredientsFile();
@@ -42,7 +43,7 @@ public class FilesControllers {
     }
 
     @GetMapping(value = "/export/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Скачивание файла", description = "Скачивание файла рецептов")
+    @Operation(summary = "Скачивание файла", description = "Скачивание файла рецептов в формате json")
     public ResponseEntity<InputStreamResource> downloadRecipesFile() throws FileNotFoundException {
         File file = filesService.getRecipesFile();
 
@@ -64,7 +65,7 @@ public class FilesControllers {
         filesService.cleanIngredientsFile();
         File dataFile = filesService.getIngredientsFile();
         try (FileOutputStream fos = new FileOutputStream(dataFile)) {
-            IOUtils.copy(file.getInputStream(),fos);
+            IOUtils.copy(file.getInputStream(), fos);
             return ResponseEntity.ok().build();
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,13 +73,13 @@ public class FilesControllers {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @PostMapping(value ="/import/recipes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/import/recipes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Загрузка файла", description = "Загружаем файл рецептов")
     public ResponseEntity<Void> uploadRecipesFile(@RequestParam MultipartFile file) {
         filesService.cleanRecipesFile();
         File dataFile = filesService.getRecipesFile();
         try (FileOutputStream fos = new FileOutputStream(dataFile)) {
-            IOUtils.copy(file.getInputStream(),fos);
+            IOUtils.copy(file.getInputStream(), fos);
             return ResponseEntity.ok().build();
         } catch (IOException e) {
             e.printStackTrace();

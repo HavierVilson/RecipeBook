@@ -3,6 +3,8 @@ package pro.sky.recipebook.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pro.sky.recipebook.model.Ingredient;
 import pro.sky.recipebook.model.Recipe;
@@ -10,6 +12,11 @@ import pro.sky.recipebook.services.FilesService;
 import pro.sky.recipebook.services.RecipeBookService;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @Service
@@ -80,5 +87,23 @@ public class RecipeBookServiceImpl implements RecipeBookService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Path createTempRecipeFile(Integer key) {
+        Path path = filesService.createTempFile("TempRecipe");
+        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+            if (recipeHashMap.get(key) == null){
+                ResponseEntity.status(HttpStatus.NO_CONTENT);
+            } else if (recipeHashMap.get(key).getIngredients() == null ) {
+                ResponseEntity.status(HttpStatus.NO_CONTENT);
+            } else {
+                writer.append(recipeHashMap.get(key).getName() +"\n Время приготовления: " + recipeHashMap.get(key).getTime() +
+                        " минут.\n Ингридиенты: \n" + recipeHashMap.get(key).getIngredients() + "\n Инструкция приготовления:\n" +
+                        recipeHashMap.get(key).getSteps());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 }
