@@ -122,6 +122,26 @@ public class RecipeBookController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "Вывод всех рецептов", description = "Выводит все рецепты")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Все рецепты выведены",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = Ingredient.class)
+                                    )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<String> getIngredient() {
+        return ResponseEntity.ok(recipeBookService.getAll());
+    }
+
     @GetMapping(value = "/export/{key}", produces = MediaType.TEXT_PLAIN_VALUE)
     @Operation(summary = "Скачивание файла", description = "Скачивание файла рецепта в формате txt")
     public ResponseEntity<Object> downloadRecipesFile(@PathVariable Integer key) {

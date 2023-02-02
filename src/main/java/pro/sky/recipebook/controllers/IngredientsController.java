@@ -111,4 +111,24 @@ public class IngredientsController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/all")
+    @Operation(summary = "Вывод всех ингридиента", description = "Выводит все ингридиенты")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ингридтиенты выведены",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = Ingredient.class)
+                                    )
+                            }
+                    )
+            }
+    )
+    public ResponseEntity<String> getIngredient() {
+        return ResponseEntity.ok(ingredientsService.getAll());
+    }
 }
