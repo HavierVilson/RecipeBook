@@ -17,7 +17,7 @@ public class IngredientsServiceImpl implements IngredientsService {
     final private FilesService filesService;
 
     private IngredientsService ingredientsService;
-    private static HashMap<Integer, Ingredient> ingredientHashMap;
+    private static HashMap<Integer, Ingredient> ingredientHashMap = new HashMap<>();
     private static int id = 1;
 
     public IngredientsServiceImpl(FilesService filesService) {
@@ -31,7 +31,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     @Override
     public void add(Ingredient ingredient) {
-        ingredientHashMap.getOrDefault(IngredientsServiceImpl.id++, ingredient);
+        ingredientHashMap.put(IngredientsServiceImpl.id++, ingredient);
         saveToFile();
     }
 
@@ -60,7 +60,7 @@ public class IngredientsServiceImpl implements IngredientsService {
 
     @Override
     public String getAll() {
-        return ingredientHashMap.values().iterator().toString();
+        return ingredientHashMap.values().toString();
     }
 
     private void saveToFile(){
