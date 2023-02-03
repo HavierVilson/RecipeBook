@@ -23,7 +23,7 @@ import java.util.HashMap;
 public class RecipeBookServiceImpl implements RecipeBookService {
 
     final private FilesService filesService;
-    private static HashMap<Integer, Recipe> recipeHashMap;
+    private static HashMap<Integer, Recipe> recipeHashMap = new HashMap<>();
     private static int id = 1;
 
     public RecipeBookServiceImpl(FilesService filesService) {
@@ -89,21 +89,24 @@ public class RecipeBookServiceImpl implements RecipeBookService {
         }
     }
 
-    public Path createTempRecipeFile(Integer key) {
+    public Path createTempRecipeFile() {
         Path path = filesService.createTempFile("TempRecipe");
-        try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-            if (recipeHashMap.get(key) == null){
-                ResponseEntity.status(HttpStatus.NO_CONTENT);
-            } else if (recipeHashMap.get(key).getIngredients() == null ) {
-                ResponseEntity.status(HttpStatus.NO_CONTENT);
-            } else {
-                writer.append(recipeHashMap.get(key).getName() +"\n Время приготовления: " + recipeHashMap.get(key).getTime() +
-                        " минут.\n Ингридиенты: \n" + recipeHashMap.get(key).getIngredients() + "\n Инструкция приготовления:\n" +
-                        recipeHashMap.get(key).getSteps());
+        for (Recipe recipe: recipeHashMap.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                if (recipe == null){
+                    ResponseEntity.status(HttpStatus.NO_CONTENT);
+                } else if (recipe.getIngredients() == null ) {
+                    ResponseEntity.status(HttpStatus.NO_CONTENT);
+                } else {
+                    writer.append(recipe.getName() +"\n Время приготовления: " + recipe.getTime() +
+                            " минут.\n Ингридиенты: \n" + recipe.getIngredients() + "\n Инструкция приготовления:\n" +
+                            recipe.getSteps());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
         return path;
     }
 }

@@ -142,11 +142,11 @@ public class RecipeBookController {
         return ResponseEntity.ok(recipeBookService.getAll());
     }
 
-    @GetMapping(value = "/export/{key}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(value = "/export", produces = MediaType.TEXT_PLAIN_VALUE)
     @Operation(summary = "Скачивание файла", description = "Скачивание файла рецепта в формате txt")
-    public ResponseEntity<Object> downloadRecipesFile(@PathVariable Integer key) {
+    public ResponseEntity<Object> downloadRecipesFile() {
         try {
-            Path path = recipeBookService.createTempRecipeFile(key);
+            Path path = recipeBookService.createTempRecipeFile();
             if (Files.size(path) == 0) {
                 return ResponseEntity.noContent().build();
             }
