@@ -6,13 +6,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.recipebook.model.Recipe;
 import pro.sky.recipebook.model.Ingredient;
 import pro.sky.recipebook.services.impl.RecipeBookServiceImpl;
 
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/recipes")
@@ -133,5 +140,25 @@ public class RecipeBookController {
     )
     public ResponseEntity<String> getIngredient() {
         return ResponseEntity.ok(recipeBookService.getAll());
+    }
+
+    @GetMapping(value = "/export", produces = MediaType.TEXT_PLAIN_VALUE)
+    @Operation(summary = "Скачивание файла", description = "Скачивание файла рецепта в формате txt")
+    public ResponseEntity<Object> downloadRecipesFile() {
+        try {
+            Path path = recipeBookService.createTempRecipeFile();
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "TempRecipes.txt\"")
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
     }
 }

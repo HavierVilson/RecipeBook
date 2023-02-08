@@ -3,6 +3,8 @@ package pro.sky.recipebook.services.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import pro.sky.recipebook.model.Ingredient;
 import pro.sky.recipebook.model.Recipe;
@@ -10,13 +12,18 @@ import pro.sky.recipebook.services.FilesService;
 import pro.sky.recipebook.services.RecipeBookService;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @Service
 public class RecipeBookServiceImpl implements RecipeBookService {
 
     final private FilesService filesService;
-    private static HashMap<Integer, Recipe> recipeHashMap;
+    private static HashMap<Integer, Recipe> recipeHashMap = new HashMap<>();
     private static int id = 1;
 
     public RecipeBookServiceImpl(FilesService filesService) {
@@ -80,5 +87,26 @@ public class RecipeBookServiceImpl implements RecipeBookService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Path createTempRecipeFile() {
+        Path path = filesService.createTempFile("TempRecipe");
+        for (Recipe recipe: recipeHashMap.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                if (recipe == null){
+                    ResponseEntity.status(HttpStatus.NO_CONTENT);
+                } else if (recipe.getIngredients() == null ) {
+                    ResponseEntity.status(HttpStatus.NO_CONTENT);
+                } else {
+                    writer.append(recipe.getName() +"\n Время приготовления: " + recipe.getTime() +
+                            " минут.\n Ингридиенты: \n" + recipe.getIngredients() + "\n Инструкция приготовления:\n" +
+                            recipe.getSteps());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return path;
     }
 }
